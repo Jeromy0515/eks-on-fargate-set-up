@@ -16,6 +16,13 @@ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/d
 sudo mv /tmp/eksctl /usr/local/bin
 ```
 
+## Install helm for Linux
+```
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
+```
+
 ## Set up Kubeconfig
 ```
 aws eks --region <region> update-kubeconfig --name <cluster-name>
@@ -77,4 +84,61 @@ sed -i.bak -e 's|region-code|<region>|' ./aws-load-balancer-controller.yaml
 kubectl apply -f aws-load-balancer-controller.yaml
 ```
 
-## 
+### OR
+
+```
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=<cluster-name> \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  --set region=<region> \
+  --set vpcId=<vpc-id> \
+```
+
+## CloudWatch Container Insights
+
+### Create Namespace
+```
+kubectl create ns amazon-cloudwatch
+```
+
+### Set Environment variables
+```
+ClusterName=<cluster-name>
+RegionName=<region>
+FluentBitHttpPort='2020'
+FluentBitReadFromHead='Off'
+[[ ${FluentBitReadFromHead} = 'On' ]] && FluentBitReadFromTail='Off'|| FluentBitReadFromTail='On'
+[[ -z ${FluentBitHttpPort} ]] && FluentBitHttpServer='Off' || FluentBitHttpServer='On'
+```
+
+### Install YAML file
+```
+wget https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluent-bit-quickstart.yaml
+```
+
+### Apply Environment variables
+```
+sed -i 's/{{cluster_name}}/'${ClusterName}'/;s/{{region_name}}/'${RegionName}'/;s/{{http_server_toggle}}/"'${FluentBitHttpServer}'"/;s/{{http_server_port}}/"'${FluentBitHttpPort}'"/;s/{{read_from_head}}/"'${FluentBitReadFromHead}'"/;s/{{read_from_tail}}/"'${FluentBitReadFromTail}'"/' cwagent-fluent-bit-quickstart.yaml 
+```
+
+### Open this yaml file and this code to the 464th line
+```
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: eks.amazonaws.com/compute-type
+          operator: NotIn
+          values:
+          - fargate
+```
+
+### Deploy
+```
+kubectl apply -f cwagent-fluent-bit-quickstart.yaml 
+```
