@@ -1,0 +1,43 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-ingress
+  namespace: demo
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/actions.forward-multiple-tg: |
+      {
+        "Type": "forward",
+        "ForwardConfig": {
+          "TargetGroups": [
+            {
+              "ServiceName": "demo-service-v1",
+              "ServicePort": 80,
+              "Weight": 50
+            },
+            {
+              "ServiceName": "demo-service-v2",
+              "ServicePort": 80,
+              "Weight": 50
+            }
+          ]
+        }    
+      }
+spec:
+  defaultBackend:
+    service:
+      name: demo-service-v1
+      port:
+        number: 80
+  rules:
+    - http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: forward-multiple-tg
+                port:
+                  name: use-annotation
