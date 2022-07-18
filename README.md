@@ -119,13 +119,19 @@ FluentBitReadFromHead='Off'
 ```
 wget https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluent-bit-quickstart.yaml
 ```
+#### Error: INSTALLATION FAILED: Kubernetes cluster unreachable: exec plugin: invalid apiVersion "client.authentication.k8s.io/v1alpha1"
+```
+curl -L https://git.io/get_helm.sh | bash -s -- --version v3.8.2
+```
+
+
 
 ### Apply Environment variables
 ```
 sed -i 's/{{cluster_name}}/'${ClusterName}'/;s/{{region_name}}/'${RegionName}'/;s/{{http_server_toggle}}/"'${FluentBitHttpServer}'"/;s/{{http_server_port}}/"'${FluentBitHttpPort}'"/;s/{{read_from_head}}/"'${FluentBitReadFromHead}'"/;s/{{read_from_tail}}/"'${FluentBitReadFromTail}'"/' cwagent-fluent-bit-quickstart.yaml 
 ```
 
-### Open this yaml file and this code to the 464th line
+### Open this yaml file and add this code to the 464th line
 ```
 affinity:
   nodeAffinity:
