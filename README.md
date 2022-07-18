@@ -1,4 +1,5 @@
 # EKS on Fargate
+![image](https://user-images.githubusercontent.com/77256585/179463954-82e8f7c1-c395-4221-b67e-913ade5909bc.png)
 
 ## Install kuebctl for Linux
 ```
@@ -24,6 +25,19 @@ aws eks --region <region> update-kubeconfig --name <cluster-name>
 ```
 eksctl utils associate-iam-oidc-provider --cluster <cluster-name> --approve
 ```
+
+## Set Fargate logging
+
+### Config log router
+```
+kubectl apply -f aws-observability-namespace.yaml
+```
+
+### Create ConfigMap for CloudWatch
+```
+kubectl apply -f aws-logging-cloudwatch-configmap.yaml
+```
+
 
 ## Installing the AWS Load Balancer Controller add-on
 
@@ -63,14 +77,4 @@ sed -i.bak -e 's|region-code|<region>|' ./aws-load-balancer-controller.yaml
 kubectl apply -f aws-load-balancer-controller.yaml
 ```
 
-## Set Fargate logging
-
-### Config log router
-```
-kubectl apply -f aws-observability-namespace.yaml
-```
-
-### Create ConfigMap for CloudWatch
-```
-kubectl apply -f aws-logging-cloudwatch-configmap.yaml
-```
+## 
