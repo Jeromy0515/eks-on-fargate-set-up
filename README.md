@@ -98,6 +98,12 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --set vpcId=<vpc-id> \
 ```
 
+#### Error: INSTALLATION FAILED: Kubernetes cluster unreachable: exec plugin: invalid apiVersion "client.authentication.k8s.io/v1alpha1"
+```
+curl -L https://git.io/get_helm.sh | bash -s -- --version v3.8.2
+```
+
+
 ## CloudWatch Container Insights
 
 ### Create Namespace
@@ -119,12 +125,6 @@ FluentBitReadFromHead='Off'
 ```
 wget https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluent-bit-quickstart.yaml
 ```
-#### Error: INSTALLATION FAILED: Kubernetes cluster unreachable: exec plugin: invalid apiVersion "client.authentication.k8s.io/v1alpha1"
-```
-curl -L https://git.io/get_helm.sh | bash -s -- --version v3.8.2
-```
-
-
 
 ### Apply Environment variables
 ```
