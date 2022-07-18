@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: apache
-          image: apache:latest
+          image: httpd:latest
