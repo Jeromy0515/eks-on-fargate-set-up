@@ -65,7 +65,7 @@ eksctl create iamserviceaccount \
   --attach-policy-arn=arn:aws:iam::<account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
   --approve
 ```
-
+---
 ### Install cert-manager
 ```
 kubectl apply \
@@ -83,8 +83,8 @@ sed -i.bak -e 's|region-code|<region>|' ./aws-load-balancer-controller.yaml
 ```
 kubectl apply -f aws-load-balancer-controller.yaml
 ```
-
-### OR
+---
+### Or using helm
 
 ```
 helm repo add eks https://aws.github.io/eks-charts
@@ -131,7 +131,7 @@ wget https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-i
 sed -i 's/{{cluster_name}}/'${ClusterName}'/;s/{{region_name}}/'${RegionName}'/;s/{{http_server_toggle}}/"'${FluentBitHttpServer}'"/;s/{{http_server_port}}/"'${FluentBitHttpPort}'"/;s/{{read_from_head}}/"'${FluentBitReadFromHead}'"/;s/{{read_from_tail}}/"'${FluentBitReadFromTail}'"/' cwagent-fluent-bit-quickstart.yaml 
 ```
 
-### Open this yaml file and add this code to the 464th line
+### Open this yaml file and add this code to the 469th line
 ```
 affinity:
   nodeAffinity:
