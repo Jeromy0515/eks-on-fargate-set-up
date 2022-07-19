@@ -1,5 +1,5 @@
 # EKS on Fargate
-![image](https://user-images.githubusercontent.com/77256585/179463954-82e8f7c1-c395-4221-b67e-913ade5909bc.png)
+![image](https://user-images.githubusercontent.com/77256585/179667389-336c516a-150b-49cb-b1a8-bd5ff71c5137.png)
 
 ## Install kuebctl for Linux
 ```
@@ -45,7 +45,22 @@ kubectl apply -f aws-observability-namespace.yaml
 kubectl apply -f aws-logging-cloudwatch-configmap.yaml
 ```
 
+### Download policy
+```
+curl -o permissions.json https://raw.githubusercontent.com/aws-samples/amazon-eks-fluent-logging-examples/mainline/examples/fargate/cloudwatchlogs/permissions.json
+```
 
+### Create policy
+```
+aws iam create-policy --policy-name eks-fargate-logging-policy --policy-document file://permissions.json
+```
+
+### Attach policy to role
+```
+aws iam attach-role-policy \
+  --policy-arn arn:aws:iam::<account-id>:policy/eks-fargate-logging-policy \
+  --role-name <EKSFargatePodExecutionRole>
+```
 ## Installing the AWS Load Balancer Controller add-on
 
 ### Create IAM Policy for AWS load balancer controller
@@ -102,6 +117,19 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
 ```
 curl -L https://git.io/get_helm.sh | bash -s -- --version v3.8.2
 ```
+
+## Run CoreDNS on Fargate
+
+### Remove annotation
+```
+kubectl patch deployment coredns -n kube-system --type=json -p='[{"op": "remove", "path": "/spec/template/metadata/annotations", "value": "eks.amazonaws.com/compute-type"}]'
+```
+
+### Restart CoreDNS
+```
+kubectl rollout restart -n kube-system deployment coredns
+```
+
 
 
 ## CloudWatch Container Insights
