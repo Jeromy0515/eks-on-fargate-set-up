@@ -1,13 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: v1
-  namespace: demo
+  name: blue
+  namespace: wsi
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: fargate
+      version: blue
   template:
     metadata:
       namespace: demo

@@ -1,24 +1,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: demo-ingress
-  namespace: demo
+  name: wsi-ingress
+  namespace: wsi
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/target-type: ip # Pod가 Fargate위에서 실행되는 경우 target-type은 무조건 ip로 줘야됨
     alb.ingress.kubernetes.io/actions.forward-multiple-tg: |
       {
         "Type": "forward",
         "ForwardConfig": {
           "TargetGroups": [
             {
-              "ServiceName": "demo-service-v1",
+              "ServiceName": "service-blue",
               "ServicePort": 80,
               "Weight": 50
             },
             {
-              "ServiceName": "demo-service-v2",
+              "ServiceName": "service-green",
               "ServicePort": 80,
               "Weight": 50
             }
@@ -28,7 +28,7 @@ metadata:
 spec:
   defaultBackend:
     service:
-      name: demo-service-v1
+      name: service-blue
       port:
         number: 80
   rules:
