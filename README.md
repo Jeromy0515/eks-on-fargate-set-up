@@ -130,8 +130,6 @@ kubectl patch deployment coredns -n kube-system --type=json -p='[{"op": "remove"
 kubectl rollout restart -n kube-system deployment coredns
 ```
 
-
-
 ## CloudWatch Container Insights
 
 ### Create Namespace
