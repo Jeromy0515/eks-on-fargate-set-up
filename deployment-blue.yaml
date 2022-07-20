@@ -13,6 +13,7 @@ spec:
       namespace: demo
       labels:
         app: fargate
+        version: blue
     spec:
       containers:
         - name: nginx

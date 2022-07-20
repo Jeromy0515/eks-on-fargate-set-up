@@ -117,6 +117,10 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
 ```
 curl -L https://git.io/get_helm.sh | bash -s -- --version v3.8.2
 ```
+#### Uninstall aws-load-balancer-controller
+```
+helm uninstall aws-load-balancer-controller -n kube-system
+```
 
 ## Run CoreDNS on Fargate
 
